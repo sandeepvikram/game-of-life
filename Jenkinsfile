@@ -3,6 +3,9 @@ pipeline {
     triggers {
         pollSCM('* * * * *')
     }
+    parameters {
+        git branch: "${params.BRANCH}", url: 'https://github.com/sandeepvikram/game-of-life.git'
+    }
     stages{
         stage('scm') {
             steps {
