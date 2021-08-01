@@ -4,12 +4,12 @@ pipeline {
         pollSCM('* * * * *')
     }
     parameters {
-        git branch: "${params.BRANCH}", url: 'https://github.com/sandeepvikram/game-of-life.git'
+        string(name: 'BRANCH', defaultValue: 'master', description: 'branch to build')
     }
     stages{
         stage('scm') {
             steps {
-                git branch: 'master', url: 'https://github.com/asquarezone/game-of-life.git'
+                git branch: "${params.BRANCH}", url: 'https://github.com/sandeepvikram/game-of-life.git'
             }
         }
         stage('build') {
