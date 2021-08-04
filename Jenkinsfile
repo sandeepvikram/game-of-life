@@ -44,7 +44,7 @@ pipeline {
             junit '**/TEST-*.xml'
         }
         always {
-            echo 'I will always say Hello again!'
+            echo 'The code analysis is good!'
         }
     }
 }
