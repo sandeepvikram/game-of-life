@@ -1,0 +1,43 @@
+pipeline {
+    agent { label 'GOL}
+    triggers {
+        cron('H * * * *)
+        POLLSCM('* * * * *)
+    }
+    parameters { 
+        strings(name: 'BRANCH, defaultValue: 'master', description: 'Branch to be build')
+        choice(name: 'GOAL, choices: ['package', 'cleanpackage', 'install'], description: 'Install maven package')
+    }
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        retry(2)
+    }
+    environment {
+        CI_ENV = 'DEV'
+    }
+    stages {
+        stage('scm') {
+            steps {
+                git branch: "${params.BRANCH}", url: 'https://github.com/sandeepvikram/game-of-life.git'
+                echo env.CI_ENV
+            }       
+        }
+        stage('build') {
+            steps {
+                echo env.GIT_URL
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh "mvn "${params.GOAL}"
+                } 
+            }
+        }
+    }
+    post {
+        success {
+            archive '**/*.war'
+            junit '**/TEST-*.xml'
+        }
+        failure {
+            echo 'The build was a failure'
+        }
+    }
+}
